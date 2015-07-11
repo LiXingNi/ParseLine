@@ -1,0 +1,38 @@
+实现说明：
+
+1）基类：Temp_Class   -"parse.h"
+	* 该基类仅包含一个虚函数 virtual void set_val(string& str)；通过虚函数给后续继承的类提供接口，实现动态绑定
+	* 之后继承的类中，set_val将数据成员 value 设置为需要的类型值
+
+2）处理普通内置类型的模板类: Base_Class     -"parse.h"
+	* 该类继承 Temp_Class类，并重定义自己的 void set_val(string&）函数，该类处理普通内置类型，如 int, double, float...
+	* 对该模板类进行特化，分别特化 char* 与 string 类型
+
+3) 处理内置类型数组的模板类：Bases_Class	-"parse_d.h"
+	* 该类继承 Temp_Class类，重定义 set_val 函数，处理内置类型数组如 int[],double[],...,并通过读取文件中的数据获取数组的大小，（文件中数组存储方式为: num:item1,item2,...根据 num 的值定义数组大小）
+	* 该类型中将定义数据成员 N 来存储数组的大小，该数据成员访问标号为public
+	* 对该模板类进行特化处理，特化 char * 类型，支持 char*[] 数据的读取
+
+4） 处理自定义类型的模板类： Derive_Class     -"parse_d.h"
+	* 该类同样继承 Temp_Class类，并重定义虚函数
+	* 该类在定义时必须提供处理该类的 Parse 函数，并将该函数作为该类对象的构造函数的实参。否则，对该类的定义将错误
+
+
+5） 定义逐行解析的函数: int Parse_line(string&, vector<Temp_Class*>&);
+	* 该函数将 string 中的内容逐个解析存储 vector 存储的对象中。
+	* 若本行正确解析则返回 0， 否则返回 -1
+	* 需要解析的对象类型按顺序取地址放入 vector 中，通过动态绑定调用对应的虚函数，实现值解析
+
+6） 示例：
+ Base_Class<int> x;		//访问方式： x.value 	（int 值）
+ Bases_Class<char*> y;  //访问方式： y.value 		（指向数组头的指针）
+					      y.N 		 (数组的大小)
+ Derive_Class<Examp> z(parse_examp); 
+			   // 访问方式 : z.value		(Examp 类型的对象)
+
+ vector<Temp_Class*> vec = {&x,&y,&z};
+ string line;   // 假设存有值串
+ Parse_line(line,vec);
+
+
+

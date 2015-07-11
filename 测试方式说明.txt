@@ -1,0 +1,19 @@
+1)编译方式：g++ -std=c++11 test.cpp parse_line.cpp -o test
+
+2)正确测试文档为：test_ar.txt
+-其中逐列的数据需求类型为：int, int[NUM], string, char*[NUM], double,Combine
+-Combine为自定义结构体，其中数据成员有 int, char[2], double, string
+
+3)测试 int 的错误文档为: test_int.txt
+-其中，将第二行的第一列的 int 值改为了一个字符串
+
+4）测试 int[NUM] 的错误文档为：test_int_num.txt
+-其中，将第一行中第二列的 int[3] 减少一个值
+-其中，将第二行中第二列的 int[1] 增加一个无效的字符串
+-其中，第三行正确
+
+... 依次类推，名为“test_***.txt”的文档为对应错误测试文档
+
+
+5)主要程序位于 parse.h, parse_d.h, parse_line.cpp
+  测试程序位于 test.h test.cpp
